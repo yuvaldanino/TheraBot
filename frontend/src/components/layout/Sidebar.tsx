@@ -6,7 +6,7 @@ import { auth, sessions } from '../../lib/api';
 const Sidebar: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { data: profile } = useQuery({
+  const { data: profileData } = useQuery({
     queryKey: ['profile'],
     queryFn: () => auth.getProfile(),
   });
@@ -23,17 +23,20 @@ const Sidebar: React.FC = () => {
     navigate('/login');
   };
 
+  // Get the 10 most recent chats
+  const recentChats = sessionsData?.data?.slice(0, 10) || [];
+
   return (
-    <div className="w-64 h-screen bg-gray-800 text-white flex flex-col">
+    <div className="w-64 min-h-screen bg-gray-800 text-white flex flex-col">
       {/* User Profile Section */}
       <div className="p-4 border-b border-gray-700">
         <div className="flex items-center space-x-3">
           <div className="w-10 h-10 bg-blue-500 rounded-full flex items-center justify-center">
-            {profile?.user?.username?.[0]?.toUpperCase() || 'U'}
+            {profileData?.data?.user?.username?.[0]?.toUpperCase() || 'U'}
           </div>
           <div>
-            <div className="font-medium">{profile?.user?.username || 'User'}</div>
-            <div className="text-sm text-gray-400">{profile?.user?.email || ''}</div>
+            <div className="font-medium">{profileData?.data?.user?.username || 'User'}</div>
+            <div className="text-sm text-gray-400">{profileData?.data?.user?.email || ''}</div>
           </div>
         </div>
       </div>
@@ -83,7 +86,7 @@ const Sidebar: React.FC = () => {
         <div className="mt-6">
           <h3 className="text-sm font-medium text-gray-400 mb-2">Recent Chats</h3>
           <div className="space-y-1">
-            {sessionsData?.data?.map((session: any) => (
+            {recentChats.map((session: any) => (
               <Link
                 key={session.id}
                 to={`/chat/${session.id}`}
@@ -99,9 +102,6 @@ const Sidebar: React.FC = () => {
                 </div>
               </Link>
             ))}
-            {sessionsData?.data?.length === 0 && (
-              <p className="text-sm text-gray-500 italic">No recent chats</p>
-            )}
           </div>
         </div>
       </nav>
@@ -110,7 +110,7 @@ const Sidebar: React.FC = () => {
       <div className="p-4 border-t border-gray-700">
         <button
           onClick={handleLogout}
-          className="w-full flex items-center justify-center space-x-2 text-gray-400 hover:text-white p-2 rounded-lg hover:bg-gray-700"
+          className="w-full flex items-center justify-center space-x-2 p-2 rounded-lg hover:bg-gray-700"
         >
           <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
             <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
