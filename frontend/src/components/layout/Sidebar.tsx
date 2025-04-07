@@ -23,8 +23,12 @@ const Sidebar: React.FC = () => {
     navigate('/login');
   };
 
-  // Get the 10 most recent chats
-  const recentChats = sessionsData?.data?.slice(0, 10) || [];
+  // Sort sessions by created_at in descending order (newest first) and get the 10 most recent
+  const recentChats = sessionsData?.data
+    ? [...sessionsData.data]
+        .sort((a, b) => new Date(b.created_at).getTime() - new Date(a.created_at).getTime())
+        .slice(0, 10) || []
+    : [];
 
   return (
     <div className="w-64 min-h-screen bg-gray-800 text-white flex flex-col">
@@ -57,15 +61,15 @@ const Sidebar: React.FC = () => {
           </Link>
 
           <Link
-            to="/chat"
+            to="/chats"
             className={`flex items-center space-x-2 p-2 rounded-lg ${
-              isActive('/chat') ? 'bg-blue-600' : 'hover:bg-gray-700'
+              isActive('/chats') ? 'bg-blue-600' : 'hover:bg-gray-700'
             }`}
           >
             <svg className="w-5 h-5" fill="none" stroke="currentColor" viewBox="0 0 24 24">
               <path strokeLinecap="round" strokeLinejoin="round" strokeWidth={2} d="M8 12h.01M12 12h.01M16 12h.01M21 12c0 4.418-4.03 8-9 8a9.863 9.863 0 01-4.255-.949L3 20l1.395-3.72C3.512 15.042 3 13.574 3 12c0-4.418 4.03-8 9-8s9 3.582 9 8z" />
             </svg>
-            <span>Chats</span>
+            <span>All Chats</span>
           </Link>
         </div>
 

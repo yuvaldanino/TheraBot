@@ -55,8 +55,8 @@ const ChatPage: React.FC = () => {
       if (sessionData?.messages) {
         setMessages(sessionData.messages.map((msg: any) => ({
           content: msg.content,
-          is_from_user: msg.is_from_user === true,
-          timestamp: msg.timestamp
+          is_from_user: msg.role === 'user',
+          timestamp: msg.created_at
         })));
       }
     } else {
@@ -99,7 +99,7 @@ const ChatPage: React.FC = () => {
           setMessages(prev => [...prev, {
             content: latestMessage.content,
             is_from_user: false,
-            timestamp: latestMessage.timestamp
+            timestamp: latestMessage.created_at
           }]);
           
           setLoading(false);
